@@ -149,6 +149,7 @@ window.SITE_DATA = [
     id: "ai-scenarios", type: "article", platform: "wechat", featured: true,
     date: "2026-06-01", read: 6,
     url: "https://mp.weixin.qq.com/s/NANFsozDNYvKARcRbTtgSQ",
+    cover: "images/ai-scenarios.jpg",
     zh: {
       title: "「缺场景」靠不靠谱？聊聊我的 AI 应用场景",
       excerpt: "有强烈 AI 焦虑的朋友，往往 AI 用得也很少。「缺场景」到底靠不靠谱？答案也许正相反。",
