@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /**
- * add-cover.js — 全自动封面图工具
+ * add-cover.mjs — 全自动封面图工具
  *
- * 用法：node add-cover.js <文章URL> <文章id>
+ * 用法A（自动提取）：node add-cover.mjs <文章URL> <文章id>
+ * 用法B（手动指定图片URL）：node add-cover.mjs <图片URL> <文章id>
  *
  * 示例：
- *   node add-cover.js "https://mp.weixin.qq.com/s/NANFsozDNYvKARcRbTtgSQ" ai-scenarios
+ *   node add-cover.mjs "https://mp.weixin.qq.com/s/NANFsozDNYvKARcRbTtgSQ" ai-scenarios
+ *   node add-cover.mjs "https://mmbiz.qpic.cn/sz_mmbiz_jpg/xxx.jpg" deodao-ai-stage
  *
- * 流程：提取封面 → 下载到 images/<id>.jpg → 更新 data.js → git commit & push
+ * 流程：提取封面（或直接用图片URL）→ 下载到 images/<id>.jpg → 更新 data.js → git commit & push
  */
 
 import fs from "fs";
@@ -18,12 +20,20 @@ import { fileURLToPath } from "url";
 const __dir = path.dirname(fileURLToPath(import.meta.url));
 
 // ── CLI args ──────────────────────────────────────────────────
-const [articleUrl, articleId] = process.argv.slice(2);
-if (!articleUrl || !articleId) {
-  console.error("用法: node add-cover.js <文章URL> <文章id>");
-  console.error('示例: node add-cover.js "https://mp.weixin.qq.com/s/xxx" ai-scenarios');
+const [firstArg, articleId] = process.argv.slice(2);
+if (!firstArg || !articleId) {
+  console.error("用法A: node add-cover.mjs <文章URL> <文章id>");
+  console.error("用法B: node add-cover.mjs <图片URL> <文章id>  （封面提取失败时直接传图片地址）");
+  console.error('示例: node add-cover.mjs "https://mp.weixin.qq.com/s/xxx" ai-scenarios');
   process.exit(1);
 }
+
+// 判断第一个参数是图片URL还是文章URL
+const isDirectImageUrl = /\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(firstArg)
+  || firstArg.includes("mmbiz.qpic.cn")
+  || firstArg.includes("mmbiz.qlogo.cn");
+const articleUrl = isDirectImageUrl ? null : firstArg;
+const manualImgUrl = isDirectImageUrl ? firstArg : null;
 
 // ── 1. 提取封面图 URL ─────────────────────────────────────────
 async function extractCover(url) {
@@ -137,40 +147,34 @@ function updateDataJs(id, coverPath) {
     throw new Error(`data.js 中找不到 id 为 "${id}" 的文章，请检查 id 是否正确`);
   }
 
-  // 如果已有 cover 字段，替换它
-  const existingCoverRe = new RegExp(
-    `(id:\\s*"${id}"[\\s\\S]*?)(cover:\\s*"[^"]*",?\\s*\n)`,
+  // 提取该文章的块（从 id:"xxx" 到下一个顶层 { 之前），避免跨文章边界
+  const articleBlockRe = new RegExp(
+    `(\\{[^{]*id:\\s*"${id}"[\\s\\S]*?)(?=\\s*,?\\s*\\{\\s*id:|\\];)`,
     "m"
   );
+  const blockMatch = src.match(articleBlockRe);
+  if (!blockMatch) throw new Error(`data.js 中找不到 id 为 "${id}" 的文章块`);
 
-  if (existingCoverRe.test(src)) {
-    src = src.replace(existingCoverRe, (_, before, _oldCover) => {
-      return `${before}cover: "${coverPath}",\n`;
-    });
+  const originalBlock = blockMatch[1];
+  let newBlock = originalBlock;
+
+  if (/cover:\s*"[^"]*"/.test(originalBlock)) {
+    // 已有 cover，替换
+    newBlock = originalBlock.replace(/cover:\s*"[^"]*",?/, `cover: "${coverPath}",`);
     console.log(`  已替换 data.js 中 "${id}" 的 cover 字段`);
   } else {
-    // 在 url: 行后面插入 cover 字段
-    const urlLineRe = new RegExp(
-      `(id:\\s*"${id}"[\\s\\S]*?)(\\s+url:\\s*"[^"]*",)`,
-      "m"
-    );
-    if (urlLineRe.test(src)) {
-      src = src.replace(urlLineRe, (_, before, urlLine) => {
-        return `${before}${urlLine}\n    cover: "${coverPath}",`;
-      });
+    // 在 url: 行后插入
+    if (/url:\s*"[^"]*",/.test(originalBlock)) {
+      newBlock = originalBlock.replace(/(url:\s*"[^"]*",)/, `$1\n    cover: "${coverPath}",`);
       console.log(`  已在 data.js 中 "${id}" 的 url 行后插入 cover 字段`);
     } else {
-      // 兜底：在 date: 行后面插入
-      const dateLineRe = new RegExp(
-        `(id:\\s*"${id}"[\\s\\S]*?)(\\s+date:\\s*"[^"]*",)`,
-        "m"
-      );
-      src = src.replace(dateLineRe, (_, before, dateLine) => {
-        return `${before}${dateLine}\n    cover: "${coverPath}",`;
-      });
+      // 兜底：在 date: 行后插入
+      newBlock = originalBlock.replace(/(date:\s*"[^"]*",)/, `$1\n    cover: "${coverPath}",`);
       console.log(`  已在 data.js 中 "${id}" 的 date 行后插入 cover 字段`);
     }
   }
+
+  src = src.replace(originalBlock, newBlock);
 
   fs.writeFileSync(dataFile, src, "utf8");
 }
@@ -193,19 +197,30 @@ function gitPush(id, coverPath) {
 // ── main ──────────────────────────────────────────────────────
 (async () => {
   console.log(`\n封面自动化工具`);
-  console.log(`  文章 URL : ${articleUrl}`);
+  if (manualImgUrl) {
+    console.log(`  模式     : 手动图片URL`);
+    console.log(`  图片 URL : ${manualImgUrl.substring(0, 80)}...`);
+  } else {
+    console.log(`  文章 URL : ${articleUrl}`);
+  }
   console.log(`  文章 id  : ${articleId}\n`);
 
   // Step 1
-  console.log("步骤 1/4  提取封面图 URL...");
-  const imgUrl = await extractCover(articleUrl);
-  if (!imgUrl) {
-    console.error("\n✗ 未能提取到封面图。");
-    console.error("  可手动方案：在文章页面「查看源代码」搜索 og:image，复制 URL 后运行：");
-    console.error(`  node add-cover.js --url "https://mmbiz.qpic.cn/..." ${articleId}`);
-    process.exit(1);
+  let imgUrl;
+  if (manualImgUrl) {
+    imgUrl = manualImgUrl;
+    console.log("步骤 1/4  跳过提取（使用手动指定的图片 URL）✓\n");
+  } else {
+    console.log("步骤 1/4  提取封面图 URL...");
+    imgUrl = await extractCover(articleUrl);
+    if (!imgUrl) {
+      console.error("\n✗ 未能提取到封面图。");
+      console.error("  手动方案：在浏览器打开文章 → 右键封面图 → 「复制图片地址」→ 运行：");
+      console.error(`  node add-cover.mjs "https://mmbiz.qpic.cn/..." ${articleId}`);
+      process.exit(1);
+    }
+    console.log(`  封面 URL : ${imgUrl.substring(0, 80)}...\n`);
   }
-  console.log(`  封面 URL : ${imgUrl.substring(0, 80)}...\n`);
 
   // Step 2
   console.log("步骤 2/4  下载图片...");
