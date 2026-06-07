@@ -146,10 +146,74 @@ window.TOPICS = [
 
 window.SITE_DATA = [
   {
+    id: "deodao-ai-stage", type: "article", platform: "wechat",
+    date: "2025-07-12", read: 8,
+    url: "https://mp.weixin.qq.com/s/lG6keg0Z4oFmJGiR1klRjg",
+    zh: {
+      title: "我与罗振宇同台：一个普通人在 AI 落地大会的真实感悟",
+      excerpt: "第一次与神交十年的罗振宇老师同台，带着「何德何能」的念头上台，下台时找到了答案——也许我们真的是一类人。",
+      sub: "勇敢行动 × 用好工具 × 聚焦挑战，AI 成长飞轮的由来。",
+      tags: ["AI 落地", "成长", "得到"],
+      body: [
+        { t: "lead", c: "7月12日，站在AI落地大会的聚光灯下，我第一次与神交十年的罗振宇老师和快刀青衣老师同台。带着「何德何能」的念头上台，下台时，我有了答案。" },
+        { t: "p", c: "台上六位分享者，没有一个是「天才选手」。但我们有共同点：在关键时刻选择了动手、尝试、分享、坚持。勇敢、务实、乐于分享、愿意相信运气——正是这种行动信仰，让我们走在了彼此可见的轨道上。" },
+        { t: "h", c: "AI 成长飞轮" },
+        { t: "p", c: "把这段经历抽象下来，可以归纳为三个要素：勇敢行动——遇到问题先迈出0.1步，一行动就创新；用好工具——AI是可穿戴的超能力，人类进化的主战场早已从基因移到了工具；聚焦挑战——AI是扳手，拧紧的是你自己的螺丝，始终把精力放在解决自身真实问题上。" },
+        { t: "q", c: "普通人的努力，在长期主义的复利下，会积累成奇迹。" },
+        { t: "p", c: "所谓成功，不过是做好自己的事，等待随机事件来。我们一开始没想着获得这样的运气，只想着用好AI解决自己遇到的重要问题——最终不仅解决了问题，还碰上了意外的好运。" },
+      ],
+    },
+    en: {
+      title: "On Stage with Luo Zhenyu: What I Learned at an AI Summit",
+      excerpt: "Standing on stage with someone I'd admired for ten years, I kept asking myself: 'What have I done to deserve this?' By the end, I had an answer.",
+      sub: "Brave action × right tools × focused challenges — the AI growth flywheel.",
+      tags: ["AI in Practice", "Growth", "Dedao"],
+      body: [
+        { t: "lead", c: "On July 12th, I shared a stage for the first time with Luo Zhenyu — someone I'd followed for ten years — at an AI application summit. I walked on asking 'who am I to be here?' I walked off with an answer." },
+        { t: "p", c: "None of the six speakers were 'genius-track' people. But we shared something: at key moments, we all chose to act, try, share, and keep going. That action-first belief put us on paths where we could find each other." },
+        { t: "h", c: "The AI Growth Flywheel" },
+        { t: "p", c: "Three elements: brave action — when stuck, take even 0.1 steps forward; use good tools — AI is wearable superpowers, and human evolution has long since shifted from genes to tools; stay focused on your own challenges — AI is a wrench, and what you're tightening is your own bolts." },
+        { t: "q", c: "Ordinary effort, compounded over time under long-termism, has a chance to become something extraordinary." },
+        { t: "p", c: "Success is just doing your own work well and waiting for a random event to land. We never set out to get lucky — we just tried to use AI to solve real problems. The unexpected bonus came on its own." },
+      ],
+    },
+  },
+  {
+    id: "ai-4-collab-modes", type: "article", platform: "wechat",
+    date: "2026-06-07", read: 7,
+    url: "https://mp.weixin.qq.com/s/NkY32W3pGNwGugW4jIrrLw",
+    zh: {
+      title: "从逗乐到无人值守：AI 协作 4 大模式，带你飞",
+      excerpt: "你现在用 AI 的「姿势」，决定了你能飞多高。从瞎聊到躺平，AI 协作有四个段位——弄清楚自己在哪一级，才知道瓶颈在哪。",
+      sub: "找准自己卡在哪里，从小步开始挪窝。",
+      tags: ["AI 协作", "工作流", "效率"],
+      body: [
+        { t: "lead", c: "在AI的世界里，你不进化，就是拨号上网。咱们跟AI打交道，有几个「段位」——弄清楚自己在哪个段位，才能看懂自己为什么还在地面摩擦，以及怎么往上爬。" },
+        { t: "h", c: "四个段位" },
+        { t: "p", c: "模式一是「闲聊」，门槛最低，产出基本是空气；模式二是「指令驱动」，开始把AI当工具人，但手动复制粘贴的速度就是效率天花板；模式三是「工作流自动化」，让AI自己跑流程——50封开发信从一整个下午压缩到20分钟，就是这么来的；模式四是「全自动智能体」，只给目标让AI自行规划执行，但目前稳定性有限，围观为主。" },
+        { t: "q", c: "积木再精美，也架不住你拼航空母舰。找准段位，从小步开始挪窝。" },
+        { t: "p", c: "别妄想一口气变成「躺平大师」。先把常用指令攒成模板，再尝试搭个能帮你跑两步路的半自动流程。路上不顺很正常——每解决一个卡点，就往前挪一步。" },
+      ],
+    },
+    en: {
+      title: "From Chatting to Autopilot: 4 Modes of AI Collaboration",
+      excerpt: "The way you use AI right now determines how high you can fly. There are four levels — figure out which one you're at, and you'll know exactly where the ceiling is.",
+      sub: "Find where you're stuck, then take small steps forward.",
+      tags: ["AI Collaboration", "Workflow", "Productivity"],
+      body: [
+        { t: "lead", c: "In the world of AI, if you don't evolve, you're on dial-up. There are four levels of AI collaboration — knowing which one you're at reveals both your bottleneck and your path forward." },
+        { t: "h", c: "The Four Levels" },
+        { t: "p", c: "Level 1 is casual chat — zero barrier, near-zero output. Level 2 is instruction-driven prompting — useful, but your copy-paste speed is the efficiency ceiling. Level 3 is workflow automation — let AI run full processes; that's how 50 outreach emails went from a full afternoon to 20 minutes. Level 4 is fully autonomous agents — give it a goal and let it run, though today's reliability means watching from the sidelines." },
+        { t: "q", c: "Even the most elegant building blocks can't build an aircraft carrier. Find your level, then move forward one small step at a time." },
+        { t: "p", c: "Don't try to leap straight to autopilot. Start by turning your most-used prompts into templates, then try building one small semi-automatic flow. Hitting walls is normal — every problem you solve is one step further." },
+      ],
+    },
+  },
+  {
     id: "ai-scenarios", type: "article", platform: "wechat", featured: true,
     date: "2026-06-01", read: 6,
     url: "https://mp.weixin.qq.com/s/NANFsozDNYvKARcRbTtgSQ",
-    cover: "https://jimmyluo.pages.dev/images/ai-scenarios.jpg",
+    cover: "https://jimmyluo.pages.dev/images/ai-4-collab-modes.jpg",
     zh: {
       title: "「缺场景」靠不靠谱？聊聊我的 AI 应用场景",
       excerpt: "有强烈 AI 焦虑的朋友，往往 AI 用得也很少。「缺场景」到底靠不靠谱？答案也许正相反。",
