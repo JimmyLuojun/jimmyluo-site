@@ -97,91 +97,15 @@ window.TOPICS = [
 // ============================================================
 //  ★★★  如何添加你自己的内容 / How to add your own content  ★★★
 // ------------------------------------------------------------
-//  复制下面这个模板，粘到 window.SITE_DATA = [ 后面，填空即可。
-//  微信公众号没有自动同步：把每篇文章登记一条，url 填公众号原文链接，
-//  读者点开卡片看双语摘要，再点「在原平台查看」跳转到原文。
-//
-//  封面图：用「封面提取工具.html」粘贴文章链接即可自动解析 og:image。
-//  微信 CDN（mmbiz.qpic.cn）有防盗链，建议下载后放到 images/ 目录引用。
-//  没有封面就删掉 cover 这一行，会自动显示占位图（不会白屏）。
-//
-//  把这段模板复制进数组（注意结尾的逗号）：
-/*
-  {
-    id: "my-first-article",                 // 唯一英文 id，随意起
-    type: "article",                        // article 文章 / video 视频 / photo 图集
-    platform: "wechat",                     // wechat 公众号 / weibo 微博 / channel 视频号 / longform 长文 / photo 图集
-    featured: true,                         // true=放进顶部「精选」；不想精选就删掉这行
-    date: "2026-06-01",                     // 发布日期 年-月-日
-    read: 8,                                // 文章用：阅读分钟数  (视频改用 length:"6:24"，图集改用 count:18)
-    url: "https://mp.weixin.qq.com/s/你的文章链接",   // ← 公众号原文链接
-    cover: "images/my-first-article.jpg",   // ← 封面图路径 / URL（没有就删掉这一行）
-    zh: {
-      title: "中文标题",
-      excerpt: "卡片上显示的一句话摘要。",
-      sub: "阅读页副标题，再补一句。",
-      tags: ["标签一", "标签二"],
-      body: [
-        { t: "lead", c: "开头第一段（会有首字下沉）。" },
-        { t: "p",    c: "正文段落。可以复制多行。" },
-        { t: "h",    c: "小标题" },
-        { t: "q",    c: "一句想强调的话 / 金句。" },
-      ],
-    },
-    en: {
-      title: "English Title",
-      excerpt: "One-line summary shown on the card.",
-      sub: "Reader subtitle, one more line.",
-      tags: ["Tag One", "Tag Two"],
-      body: [
-        { t: "lead", c: "Opening paragraph (gets a drop cap)." },
-        { t: "p",    c: "Body paragraph. Duplicate for more." },
-        { t: "h",    c: "Subheading" },
-        { t: "q",    c: "A line worth pulling out." },
-      ],
-    },
-  },
-*/
+//  复制下面这个模板，粘到数组最前面，注意结尾的逗号）
 // ============================================================
 
 window.SITE_DATA = [
   {
-    id: "deodao-ai-stage", type: "article", platform: "wechat",
-    date: "2025-07-12", read: 8,
-    url: "https://mp.weixin.qq.com/s/lG6keg0Z4oFmJGiR1klRjg",
-    zh: {
-      title: "我与罗振宇同台：一个普通人在 AI 落地大会的真实感悟",
-      excerpt: "第一次与神交十年的罗振宇老师同台，带着「何德何能」的念头上台，下台时找到了答案——也许我们真的是一类人。",
-      sub: "勇敢行动 × 用好工具 × 聚焦挑战，AI 成长飞轮的由来。",
-      tags: ["AI 落地", "成长", "得到"],
-      body: [
-        { t: "lead", c: "7月12日，站在AI落地大会的聚光灯下，我第一次与神交十年的罗振宇老师和快刀青衣老师同台。带着「何德何能」的念头上台，下台时，我有了答案。" },
-        { t: "p", c: "台上六位分享者，没有一个是「天才选手」。但我们有共同点：在关键时刻选择了动手、尝试、分享、坚持。勇敢、务实、乐于分享、愿意相信运气——正是这种行动信仰，让我们走在了彼此可见的轨道上。" },
-        { t: "h", c: "AI 成长飞轮" },
-        { t: "p", c: "把这段经历抽象下来，可以归纳为三个要素：勇敢行动——遇到问题先迈出0.1步，一行动就创新；用好工具——AI是可穿戴的超能力，人类进化的主战场早已从基因移到了工具；聚焦挑战——AI是扳手，拧紧的是你自己的螺丝，始终把精力放在解决自身真实问题上。" },
-        { t: "q", c: "普通人的努力，在长期主义的复利下，会积累成奇迹。" },
-        { t: "p", c: "所谓成功，不过是做好自己的事，等待随机事件来。我们一开始没想着获得这样的运气，只想着用好AI解决自己遇到的重要问题——最终不仅解决了问题，还碰上了意外的好运。" },
-      ],
-    },
-    en: {
-      title: "On Stage with Luo Zhenyu: What I Learned at an AI Summit",
-      excerpt: "Standing on stage with someone I'd admired for ten years, I kept asking myself: 'What have I done to deserve this?' By the end, I had an answer.",
-      sub: "Brave action × right tools × focused challenges — the AI growth flywheel.",
-      tags: ["AI in Practice", "Growth", "Dedao"],
-      body: [
-        { t: "lead", c: "On July 12th, I shared a stage for the first time with Luo Zhenyu — someone I'd followed for ten years — at an AI application summit. I walked on asking 'who am I to be here?' I walked off with an answer." },
-        { t: "p", c: "None of the six speakers were 'genius-track' people. But we shared something: at key moments, we all chose to act, try, share, and keep going. That action-first belief put us on paths where we could find each other." },
-        { t: "h", c: "The AI Growth Flywheel" },
-        { t: "p", c: "Three elements: brave action — when stuck, take even 0.1 steps forward; use good tools — AI is wearable superpowers, and human evolution has long since shifted from genes to tools; stay focused on your own challenges — AI is a wrench, and what you're tightening is your own bolts." },
-        { t: "q", c: "Ordinary effort, compounded over time under long-termism, has a chance to become something extraordinary." },
-        { t: "p", c: "Success is just doing your own work well and waiting for a random event to land. We never set out to get lucky — we just tried to use AI to solve real problems. The unexpected bonus came on its own." },
-      ],
-    },
-  },
-  {
-    id: "ai-4-collab-modes", type: "article", platform: "wechat",
+    id: "ai-4-collab-modes", type: "article", platform: "wechat", featured: true,
     date: "2026-06-07", read: 7,
     url: "https://mp.weixin.qq.com/s/NkY32W3pGNwGugW4jIrrLw",
+    cover: "https://jimmyluo.pages.dev/images/ai-4-collab-modes.jpg",
     zh: {
       title: "从逗乐到无人值守：AI 协作 4 大模式，带你飞",
       excerpt: "你现在用 AI 的「姿势」，决定了你能飞多高。从瞎聊到躺平，AI 协作有四个段位——弄清楚自己在哪一级，才知道瓶颈在哪。",
@@ -213,7 +137,7 @@ window.SITE_DATA = [
     id: "ai-scenarios", type: "article", platform: "wechat", featured: true,
     date: "2026-06-01", read: 6,
     url: "https://mp.weixin.qq.com/s/NANFsozDNYvKARcRbTtgSQ",
-    cover: "https://jimmyluo.pages.dev/images/deodao-ai-stage.jpg",
+    cover: "https://jimmyluo.pages.dev/images/ai-scenarios.jpg",
     zh: {
       title: "「缺场景」靠不靠谱？聊聊我的 AI 应用场景",
       excerpt: "有强烈 AI 焦虑的朋友，往往 AI 用得也很少。「缺场景」到底靠不靠谱？答案也许正相反。",
@@ -249,7 +173,34 @@ window.SITE_DATA = [
     },
   },
   {
-    id: "dev-letter-tool", type: "article", platform: "wechat", featured: true,
+    id: "start-using-ai", type: "article", platform: "weibo",
+    date: "2026-05-30", read: 3,
+    url: "",
+    zh: {
+      title: "普通人开始用 AI，最好的第一步不是学，而是「用它解决一件烦事」",
+      excerpt: "别先去学 prompt 工程。先找你今天最烦的一件小事，让 AI 帮你做掉。",
+      sub: "一条关于「如何开始」的随笔。",
+      tags: ["AI 入门", "随笔"],
+      body: [
+        { t: "lead", c: "总有人问我：想开始用 AI，该先学什么？我的回答是——别学，先用。" },
+        { t: "p", c: "找你今天最烦、最重复的一件小事：写一封邮件、整理一份表格、改一段文案，直接丢给 AI。一次小小的成功，比看十篇教程都管用。" },
+        { t: "q", c: "正反馈像滚雪球：解决一个小问题，就多一分信心，认知和经验也跟着涨。" },
+      ],
+    },
+    en: {
+      title: "The Best First Step Into AI Isn't Studying — It's Solving One Annoying Task",
+      excerpt: "Don't start with prompt engineering. Find the most annoying small thing on your plate today and let AI handle it.",
+      sub: "A short note on how to begin.",
+      tags: ["AI Basics", "Notes"],
+      body: [
+        { t: "lead", c: "People keep asking me: I want to start using AI, what should I learn first? My answer — don't study, just use it." },
+        { t: "p", c: "Find the most annoying, repetitive little task you have today: an email, a spreadsheet, a paragraph of copy. Hand it to AI. One small win beats ten tutorials." },
+        { t: "q", c: "Positive feedback snowballs: solve one small problem, gain a bit of confidence, and your skill and intuition grow with it." },
+      ],
+    },
+  },
+  {
+    id: "dev-letter-tool", type: "article", platform: "wechat",
     date: "2026-05-22", read: 8,
     url: "",
     zh: {
@@ -280,36 +231,7 @@ window.SITE_DATA = [
     },
   },
   {
-    id: "wechat-formatter", type: "article", platform: "wechat", featured: true,
-    date: "2026-04-30", read: 6,
-    url: "",
-    zh: {
-      title: "公众号排版太痛苦？我写了个程序，一键排好还自动存草稿箱",
-      excerpt: "很多时候文章写好了却不想发，就因为排版太麻烦。于是我决定干掉这个借口。",
-      sub: "用 Markdown 写作 + AI 编程，把排版这件事彻底自动化。",
-      tags: ["AIGC", "AI 编程", "工作流"],
-      body: [
-        { t: "lead", c: "给公众号文章排版，一直是困扰我的事。流程太繁琐，以至于很多时候文章明明写好了，我却懒得发出来。" },
-        { t: "p", c: "市面上没找到合适的工具，于是我用 AI 编程写了一个公众号排版程序：我用 Markdown 写好文章、配好图，运行程序，它就自动排成我喜欢的格式，并直接保存到公众号草稿箱——连封面和配图上传都不用我操心。" },
-        { t: "q", c: "当一件事不再痛苦，你才会真正持续地做它。" },
-        { t: "p", c: "工具不会替你写出好内容，但它能拿掉所有让你「不想开始」的摩擦。这一点，常常比内容本身更决定你能走多远。" },
-      ],
-    },
-    en: {
-      title: "Hate Formatting WeChat Articles? I Wrote a Program That Does It in One Click",
-      excerpt: "Often a finished article never gets published — just because formatting is a chore. So I killed that excuse.",
-      sub: "Write in Markdown + AI coding to fully automate formatting.",
-      tags: ["AIGC", "AI Coding", "Workflow"],
-      body: [
-        { t: "lead", c: "Formatting articles for WeChat always bugged me. The process was so tedious that, plenty of times, a finished piece simply never got posted." },
-        { t: "p", c: "I couldn't find a tool I liked, so I used AI coding to write a WeChat formatter: I write in Markdown with images placed, run the program, and it auto-formats to my preferred style and saves straight to the WeChat draft box — no manual cover or image uploads needed." },
-        { t: "q", c: "Only when something stops being painful do you actually keep doing it." },
-        { t: "p", c: "A tool won't write good content for you, but it can remove every bit of friction that makes you 'not want to start.' That often decides how far you go more than the content itself." },
-      ],
-    },
-  },
-  {
-    id: "kid-ai-game", type: "video", platform: "channel", featured: true,
+    id: "kid-ai-game", type: "video", platform: "channel",
     date: "2026-05-09", length: "9:12",
     url: "",
     zh: {
@@ -334,6 +256,35 @@ window.SITE_DATA = [
         { t: "p", c: "I don't actually play games, but building one was genuinely fun and taught me a lot. In this video I also share some of the thinking and feeling behind making it." },
         { t: "q", c: "He said writing it himself at school pace would take 'years.' With AI, two weeks wasn't hard." },
         { t: "p", c: "This isn't to say fundamentals don't matter — it's that when the tools change, the path and pace of learning should change with them." },
+      ],
+    },
+  },
+  {
+    id: "wechat-formatter", type: "article", platform: "wechat",
+    date: "2026-04-30", read: 6,
+    url: "",
+    zh: {
+      title: "公众号排版太痛苦？我写了个程序，一键排好还自动存草稿箱",
+      excerpt: "很多时候文章写好了却不想发，就因为排版太麻烦。于是我决定干掉这个借口。",
+      sub: "用 Markdown 写作 + AI 编程，把排版这件事彻底自动化。",
+      tags: ["AIGC", "AI 编程", "工作流"],
+      body: [
+        { t: "lead", c: "给公众号文章排版，一直是困扰我的事。流程太繁琐，以至于很多时候文章明明写好了，我却懒得发出来。" },
+        { t: "p", c: "市面上没找到合适的工具，于是我用 AI 编程写了一个公众号排版程序：我用 Markdown 写好文章、配好图，运行程序，它就自动排成我喜欢的格式，并直接保存到公众号草稿箱——连封面和配图上传都不用我操心。" },
+        { t: "q", c: "当一件事不再痛苦，你才会真正持续地做它。" },
+        { t: "p", c: "工具不会替你写出好内容，但它能拿掉所有让你「不想开始」的摩擦。这一点，常常比内容本身更决定你能走多远。" },
+      ],
+    },
+    en: {
+      title: "Hate Formatting WeChat Articles? I Wrote a Program That Does It in One Click",
+      excerpt: "Often a finished article never gets published — just because formatting is a chore. So I killed that excuse.",
+      sub: "Write in Markdown + AI coding to fully automate formatting.",
+      tags: ["AIGC", "AI Coding", "Workflow"],
+      body: [
+        { t: "lead", c: "Formatting articles for WeChat always bugged me. The process was so tedious that, plenty of times, a finished piece simply never got posted." },
+        { t: "p", c: "I couldn't find a tool I liked, so I used AI coding to write a WeChat formatter: I write in Markdown with images placed, run the program, and it auto-formats to my preferred style and saves straight to the WeChat draft box — no manual cover or image uploads needed." },
+        { t: "q", c: "Only when something stops being painful do you actually keep doing it." },
+        { t: "p", c: "A tool won't write good content for you, but it can remove every bit of friction that makes you 'not want to start.' That often decides how far you go more than the content itself." },
       ],
     },
   },
@@ -367,6 +318,31 @@ window.SITE_DATA = [
     },
   },
   {
+    id: "aigc-poster-set", type: "photo", platform: "photo",
+    date: "2026-03-12", count: 12,
+    url: "",
+    zh: {
+      title: "AIGC 海报实验：当提示词遇见东方美学",
+      excerpt: "12 张完全由 AI 生成的海报，试着把水墨、留白与赛博质感揉在一起。",
+      sub: "一组 AIGC 视觉实验。",
+      tags: ["AIGC", "图像", "设计"],
+      body: [
+        { t: "lead", c: "这组海报全部由 AI 生成。我想试一件事：能不能让生成式图像，长出一点东方的呼吸感。" },
+        { t: "p", c: "水墨的留白、宣纸的肌理，再混一点冷色的赛博光——每一张背后都是几十次提示词的迭代。工具是 AI，但审美的判断，仍然得自己来。" },
+      ],
+    },
+    en: {
+      title: "AIGC Poster Experiment: When Prompts Meet Eastern Aesthetics",
+      excerpt: "12 fully AI-generated posters, trying to blend ink-wash, negative space and a cyber sheen.",
+      sub: "A set of AIGC visual experiments.",
+      tags: ["AIGC", "Image", "Design"],
+      body: [
+        { t: "lead", c: "Every poster here is AI-generated. I wanted to test one thing: can generative images grow a bit of Eastern breathing room." },
+        { t: "p", c: "Ink-wash negative space, the texture of rice paper, mixed with a cool cyber glow — each image is dozens of prompt iterations deep. The tool is AI, but the aesthetic judgment is still mine to make." },
+      ],
+    },
+  },
+  {
     id: "ai-writing-flow", type: "article", platform: "wechat",
     date: "2026-02-18", read: 7,
     url: "",
@@ -390,33 +366,6 @@ window.SITE_DATA = [
         { t: "lead", c: "Many people use AI to 'write it for me.' I mostly use it to 'force me to think it through.'" },
         { t: "p", c: "I hand it my rough ideas and let it interrogate, push back, and list angles I missed — then I rewrite it myself. Here AI isn't a ghostwriter; it's a mirror and a sparring partner." },
         { t: "q", c: "Ghostwrite with AI and you get the average. Question with AI and you get a better version of yourself." },
-      ],
-    },
-  },
-  {
-    id: "start-using-ai", type: "article", platform: "weibo",
-    date: "2026-05-30", read: 3,
-    url: "",
-    zh: {
-      title: "普通人开始用 AI，最好的第一步不是学，而是「用它解决一件烦事」",
-      excerpt: "别先去学 prompt 工程。先找你今天最烦的一件小事，让 AI 帮你做掉。",
-      sub: "一条关于「如何开始」的随笔。",
-      tags: ["AI 入门", "随笔"],
-      body: [
-        { t: "lead", c: "总有人问我：想开始用 AI，该先学什么？我的回答是——别学，先用。" },
-        { t: "p", c: "找你今天最烦、最重复的一件小事：写一封邮件、整理一份表格、改一段文案，直接丢给 AI。一次小小的成功，比看十篇教程都管用。" },
-        { t: "q", c: "正反馈像滚雪球：解决一个小问题，就多一分信心，认知和经验也跟着涨。" },
-      ],
-    },
-    en: {
-      title: "The Best First Step Into AI Isn't Studying — It's Solving One Annoying Task",
-      excerpt: "Don't start with prompt engineering. Find the most annoying small thing on your plate today and let AI handle it.",
-      sub: "A short note on how to begin.",
-      tags: ["AI Basics", "Notes"],
-      body: [
-        { t: "lead", c: "People keep asking me: I want to start using AI, what should I learn first? My answer — don't study, just use it." },
-        { t: "p", c: "Find the most annoying, repetitive little task you have today: an email, a spreadsheet, a paragraph of copy. Hand it to AI. One small win beats ten tutorials." },
-        { t: "q", c: "Positive feedback snowballs: solve one small problem, gain a bit of confidence, and your skill and intuition grow with it." },
       ],
     },
   },
@@ -448,27 +397,36 @@ window.SITE_DATA = [
     },
   },
   {
-    id: "aigc-poster-set", type: "photo", platform: "photo",
-    date: "2026-03-12", count: 12,
-    url: "",
+    id: "deodao-ai-stage", type: "article", platform: "wechat", featured: true,
+    date: "2025-07-12", read: 8,
+    url: "https://mp.weixin.qq.com/s/lG6keg0Z4oFmJGiR1klRjg",
+    cover: "https://jimmyluo.pages.dev/images/deodao-ai-stage.jpg",
     zh: {
-      title: "AIGC 海报实验：当提示词遇见东方美学",
-      excerpt: "12 张完全由 AI 生成的海报，试着把水墨、留白与赛博质感揉在一起。",
-      sub: "一组 AIGC 视觉实验。",
-      tags: ["AIGC", "图像", "设计"],
+      title: "我与罗振宇同台：一个普通人在 AI 落地大会的真实感悟",
+      excerpt: "第一次与神交十年的罗振宇老师同台，带着「何德何能」的念头上台，下台时找到了答案——也许我们真的是一类人。",
+      sub: "勇敢行动 × 用好工具 × 聚焦挑战，AI 成长飞轮的由来。",
+      tags: ["AI 落地", "成长", "得到"],
       body: [
-        { t: "lead", c: "这组海报全部由 AI 生成。我想试一件事：能不能让生成式图像，长出一点东方的呼吸感。" },
-        { t: "p", c: "水墨的留白、宣纸的肌理，再混一点冷色的赛博光——每一张背后都是几十次提示词的迭代。工具是 AI，但审美的判断，仍然得自己来。" },
+        { t: "lead", c: "7月12日，站在AI落地大会的聚光灯下，我第一次与神交十年的罗振宇老师和快刀青衣老师同台。带着「何德何能」的念头上台，下台时，我有了答案。" },
+        { t: "p", c: "台上六位分享者，没有一个是「天才选手」。但我们有共同点：在关键时刻选择了动手、尝试、分享、坚持。勇敢、务实、乐于分享、愿意相信运气——正是这种行动信仰，让我们走在了彼此可见的轨道上。" },
+        { t: "h", c: "AI 成长飞轮" },
+        { t: "p", c: "把这段经历抽象下来，可以归纳为三个要素：勇敢行动——遇到问题先迈出0.1步，一行动就创新；用好工具——AI是可穿戴的超能力，人类进化的主战场早已从基因移到了工具；聚焦挑战——AI是扳手，拧紧的是你自己的螺丝，始终把精力放在解决自身真实问题上。" },
+        { t: "q", c: "普通人的努力，在长期主义的复利下，会积累成奇迹。" },
+        { t: "p", c: "所谓成功，不过是做好自己的事，等待随机事件来。我们一开始没想着获得这样的运气，只想着用好AI解决自己遇到的重要问题——最终不仅解决了问题，还碰上了意外的好运。" },
       ],
     },
     en: {
-      title: "AIGC Poster Experiment: When Prompts Meet Eastern Aesthetics",
-      excerpt: "12 fully AI-generated posters, trying to blend ink-wash, negative space and a cyber sheen.",
-      sub: "A set of AIGC visual experiments.",
-      tags: ["AIGC", "Image", "Design"],
+      title: "On Stage with Luo Zhenyu: What I Learned at an AI Summit",
+      excerpt: "Standing on stage with someone I'd admired for ten years, I kept asking myself: 'What have I done to deserve this?' By the end, I had an answer.",
+      sub: "Brave action × right tools × focused challenges — the AI growth flywheel.",
+      tags: ["AI in Practice", "Growth", "Dedao"],
       body: [
-        { t: "lead", c: "Every poster here is AI-generated. I wanted to test one thing: can generative images grow a bit of Eastern breathing room." },
-        { t: "p", c: "Ink-wash negative space, the texture of rice paper, mixed with a cool cyber glow — each image is dozens of prompt iterations deep. The tool is AI, but the aesthetic judgment is still mine to make." },
+        { t: "lead", c: "On July 12th, I shared a stage for the first time with Luo Zhenyu — someone I'd followed for ten years — at an AI application summit. I walked on asking 'who am I to be here?' I walked off with an answer." },
+        { t: "p", c: "None of the six speakers were 'genius-track' people. But we shared something: at key moments, we all chose to act, try, share, and keep going. That action-first belief put us on paths where we could find each other." },
+        { t: "h", c: "The AI Growth Flywheel" },
+        { t: "p", c: "Three elements: brave action — when stuck, take even 0.1 steps forward; use good tools — AI is wearable superpowers, and human evolution has long since shifted from genes to tools; stay focused on your own challenges — AI is a wrench, and what you're tightening is your own bolts." },
+        { t: "q", c: "Ordinary effort, compounded over time under long-termism, has a chance to become something extraordinary." },
+        { t: "p", c: "Success is just doing your own work well and waiting for a random event to land. We never set out to get lucky — we just tried to use AI to solve real problems. The unexpected bonus came on its own." },
       ],
     },
   },
