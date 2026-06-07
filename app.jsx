@@ -15,6 +15,10 @@ const LS = {
   set(k, v) { try { localStorage.setItem("rln_" + k, JSON.stringify(v)); } catch {} },
 };
 
+function isBlockedCoverUrl(url) {
+  return typeof url === "string" && /\/\/[^/]*(mmbiz\.qpic\.cn|mmbiz\.qlogo\.cn|wx\.qlogo\.cn)\//i.test(url);
+}
+
 function ThemeSeg({ theme, setTheme }) {
   const opts = [
     { id: "terminal", glyph: ">_", title: "Terminal" },
@@ -71,9 +75,10 @@ function App() {
   const t = window.UI[lang];
   // Merge localStorage cover overrides (set by 封面提取工具)
   const savedCovers = (() => { try { return JSON.parse(localStorage.getItem("rln_covers") || "{}"); } catch { return {}; } })();
-  const data = window.SITE_DATA.map(item =>
-    savedCovers[item.id] ? { ...item, cover: savedCovers[item.id] } : item
-  );
+  const data = window.SITE_DATA.map(item => {
+    const savedCover = savedCovers[item.id];
+    return savedCover && !isBlockedCoverUrl(savedCover) ? { ...item, cover: savedCover } : item;
+  });
   const featured = data.filter(d => d.featured);
   const filtered = data.filter(d => filter === "all" || d.type === filter);
 

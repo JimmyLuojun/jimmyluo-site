@@ -24,6 +24,10 @@ function useReveal() {
   });
 }
 
+function isBlockedCoverUrl(url) {
+  return typeof url === "string" && /\/\/[^/]*(mmbiz\.qpic\.cn|mmbiz\.qlogo\.cn|wx\.qlogo\.cn)\//i.test(url);
+}
+
 /* ---- platform badge ---- */
 function Badge({ platform, lang }) {
   const p = window.PLATFORMS[platform];
@@ -41,22 +45,22 @@ const _coverFetching = new Set();
 
 /* ---- placeholder cover (auto-fetches via Microlink when url present) ---- */
 function Cover({ item, lang }) {
-  const [src, setSrc] = useState(item.cover || null);
+  const [src, setSrc] = useState(isBlockedCoverUrl(item.cover) ? null : item.cover || null);
   const [imgErr, setImgErr] = useState(false);
   const [fetching, setFetching] = useState(false);
 
   // When parent re-renders with a newly resolved cover, pick it up
-  useEffect(() => { if (item.cover) setSrc(item.cover); }, [item.cover]);
+  useEffect(() => { if (item.cover && !isBlockedCoverUrl(item.cover)) setSrc(item.cover); }, [item.cover]);
 
   useEffect(() => {
-    if (src || !item.url || _coverFetching.has(item.id)) return;
+    if (src || !item.url || item.url.includes("mp.weixin.qq.com/s/") || _coverFetching.has(item.id)) return;
     _coverFetching.add(item.id);
     setFetching(true);
     fetch(`https://api.microlink.io/?url=${encodeURIComponent(item.url)}`)
       .then(r => r.json())
       .then(data => {
         const url = data?.data?.image?.url;
-        if (url) {
+        if (url && !isBlockedCoverUrl(url)) {
           // Persist to localStorage so App picks it up on next render
           try {
             const saved = JSON.parse(localStorage.getItem("rln_covers") || "{}");
