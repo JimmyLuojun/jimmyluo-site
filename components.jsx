@@ -36,14 +36,53 @@ function Badge({ platform, lang }) {
   );
 }
 
-/* ---- placeholder cover ---- */
+/* ---- auto-cover fetch dedup ---- */
+const _coverFetching = new Set();
+
+/* ---- placeholder cover (auto-fetches via Microlink when url present) ---- */
 function Cover({ item, lang }) {
+  const [src, setSrc] = useState(item.cover || null);
+  const [imgErr, setImgErr] = useState(false);
+  const [fetching, setFetching] = useState(false);
+
+  // When parent re-renders with a newly resolved cover, pick it up
+  useEffect(() => { if (item.cover) setSrc(item.cover); }, [item.cover]);
+
+  useEffect(() => {
+    if (src || !item.url || _coverFetching.has(item.id)) return;
+    _coverFetching.add(item.id);
+    setFetching(true);
+    fetch(`https://api.microlink.io/?url=${encodeURIComponent(item.url)}`)
+      .then(r => r.json())
+      .then(data => {
+        const url = data?.data?.image?.url;
+        if (url) {
+          // Persist to localStorage so App picks it up on next render
+          try {
+            const saved = JSON.parse(localStorage.getItem("rln_covers") || "{}");
+            saved[item.id] = url;
+            localStorage.setItem("rln_covers", JSON.stringify(saved));
+          } catch {}
+          setSrc(url);
+          // Tell App to re-render so Reader also gets the cover
+          window.dispatchEvent(new Event("rln_cover_fetched"));
+        }
+      })
+      .catch(() => {})
+      .finally(() => setFetching(false));
+  }, [item.id, item.url]);
+
   const label = item.type === "video" ? "VIDEO FRAME" : item.type === "photo" ? "PHOTO" : "COVER IMAGE";
+  const showImg = src && !imgErr;
   return (
     <div className="cover">
-      {item.cover
-        ? <img className="cover-img" src={item.cover} alt="" loading="lazy" />
-        : <div className="cover-ph"><span className="tag">{label}</span></div>}
+      {showImg
+        ? <img className="cover-img" src={src} alt="" loading="lazy" onError={() => setImgErr(true)} />
+        : <div className="cover-ph">
+            <span className="tag" style={fetching ? { opacity: .45 } : {}}>
+              {fetching ? (lang === "zh" ? "获取封面…" : "Loading…") : label}
+            </span>
+          </div>}
       <div className="cover-grad"></div>
       <Badge platform={item.platform} lang={lang} />
       {item.type === "video" && (
@@ -146,7 +185,7 @@ function Reader({ item, lang, onClose }) {
       <article className="reader" onClick={(e) => e.stopPropagation()}>
         <div className="reader-cover">
           {item.cover
-            ? <img className="cover-img" src={item.cover} alt="" />
+            ? <img className="cover-img" src={item.cover} alt="" onError={e => e.currentTarget.style.display="none"} />
             : <div className="cover-ph"><span className="tag">{item.type === "photo" ? "GALLERY" : item.type === "video" ? "VIDEO" : "COVER IMAGE"}</span></div>}
           <div className="cover-grad"></div>
           <Badge platform={item.platform} lang={lang} />
@@ -247,7 +286,13 @@ function Footer({ lang }) {
           <a className="social" href="#" onClick={(e) => e.preventDefault()}><span className="sdot" style={{ background: "var(--text-mute)" }}></span>Email</a>
         </div>
       </div>
-      <div className="wrap copyright">© 2024–2026 {lang === "zh" ? "罗军" : "Luo Jun"} (JimmyLuo). {t.rights}.</div>
+      <div className="wrap copyright" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+        <span>© 2024–2026 {lang === "zh" ? "罗军" : "Luo Jun"} (JimmyLuo). {t.rights}.</span>
+        <a href="封面提取工具.html" style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--text-mute)", letterSpacing: ".08em", opacity: .6, transition: "opacity .15s" }}
+          onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = .6}>
+          {lang === "zh" ? "🛠 封面提取工具" : "🛠 Cover Extractor"}
+        </a>
+      </div>
     </footer>
   );
 }

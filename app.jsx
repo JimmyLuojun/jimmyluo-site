@@ -44,6 +44,14 @@ function App() {
   const [motion, setMotion] = useState(() => LS.get("motion", true));
   const [ticker, setTicker] = useState(() => LS.get("ticker", true));
 
+  // Re-render when a cover is auto-fetched so Reader also picks it up
+  const [, _bumpCovers] = useState(0);
+  useEffect(() => {
+    const handler = () => _bumpCovers(v => v + 1);
+    window.addEventListener("rln_cover_fetched", handler);
+    return () => window.removeEventListener("rln_cover_fetched", handler);
+  }, []);
+
   useEffect(() => { document.documentElement.setAttribute("data-theme", theme); LS.set("theme", theme); }, [theme]);
   useEffect(() => { document.documentElement.lang = lang === "zh" ? "zh-CN" : "en"; LS.set("lang", lang); }, [lang]);
   useEffect(() => { LS.set("view", view); }, [view]);
@@ -61,7 +69,11 @@ function App() {
   useReveal();
 
   const t = window.UI[lang];
-  const data = window.SITE_DATA;
+  // Merge localStorage cover overrides (set by 封面提取工具)
+  const savedCovers = (() => { try { return JSON.parse(localStorage.getItem("rln_covers") || "{}"); } catch { return {}; } })();
+  const data = window.SITE_DATA.map(item =>
+    savedCovers[item.id] ? { ...item, cover: savedCovers[item.id] } : item
+  );
   const featured = data.filter(d => d.featured);
   const filtered = data.filter(d => filter === "all" || d.type === filter);
 

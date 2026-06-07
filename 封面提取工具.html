@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>封面提取工具 · JimmyLuo 内容平台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="data.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161e;
+    --surface: rgba(255,255,255,.06);
+    --border: rgba(255,255,255,.1);
+    --text: #e8eaf2;
+    --dim: #8892b0;
+    --mute: #4a5272;
+    --accent: #6f8cff;
+    --green: #3fc463;
+    --red: #ff5a5a;
+    --radius: 12px;
+    --font: "Manrope","Noto Sans SC",system-ui,sans-serif;
+    --mono: "JetBrains Mono",monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px 80px;
+  }
+
+  /* back link */
+  .back {
+    align-self: flex-start;
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto 32px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color .15s;
+  }
+  .back:hover { color: var(--text); }
+  .back svg { flex-shrink: 0; }
+
+  /* header */
+  .hd {
+    max-width: 760px;
+    width: 100%;
+    margin-bottom: 36px;
+  }
+  .hd-eyebrow {
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: var(--mono);
+    margin-bottom: 10px;
+  }
+  .hd h1 {
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .hd p {
+    font-size: 14px;
+    color: var(--dim);
+    line-height: 1.7;
+    max-width: 540px;
+  }
+
+  /* card */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    max-width: 760px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    color: var(--dim);
+    margin-bottom: 14px;
+  }
+
+  /* url input row */
+  .input-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .url-input {
+    flex: 1;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .url-input::placeholder { color: var(--mute); }
+  .url-input:focus { border-color: var(--accent); }
+
+  .btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 22px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity .15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn:hover { opacity: .88; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* status */
+  .status {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 20px;
+  }
+  .status.err { color: var(--red); }
+  .status.ok  { color: var(--green); }
+
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* result section */
+  #result { display: none; }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 560px) {
+    .result-grid { grid-template-columns: 1fr; }
+  }
+
+  .cover-wrap {
+    position: relative;
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .cover-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cover-wrap .no-img {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--mute); font-family: var(--mono);
+  }
+
+  .result-info { display: flex; flex-direction: column; gap: 14px; }
+
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--mute); font-family: var(--mono); margin-bottom: 4px; }
+
+  .url-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--dim);
+    word-break: break-all;
+    line-height: 1.6;
+    max-height: 72px;
+    overflow-y: auto;
+  }
+  .url-box.empty { font-style: italic; color: var(--mute); }
+
+  .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .btn-sm {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 14px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .btn-sm:hover { background: rgba(255,255,255,.09); border-color: var(--accent); }
+  .btn-sm.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-sm.primary:hover { opacity: .88; }
+  .btn-sm:disabled { opacity: .4; cursor: not-allowed; }
+
+  .copied-badge {
+    font-size: 11px; color: var(--green);
+    display: none; align-items: center; gap: 4px;
+    font-family: var(--mono);
+  }
+  .copied-badge.show { display: flex; }
+
+  /* data.js snippet */
+  .snippet-box {
+    background: #0a0c12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.75;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--dim);
+  }
+  .k { color: #a172ff; }
+  .s { color: #3fc463; }
+  .v { color: #6f8cff; }
+  .c { color: #4a5272; }
+
+  /* explainer steps */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-family: var(--mono);
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-text { font-size: 14px; color: var(--dim); line-height: 1.6; }
+  .step-text strong { color: var(--text); font-weight: 600; }
+  .step-text code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent);
+  }
+
+  /* notice */
+  .notice {
+    background: rgba(111,140,255,.08);
+    border: 1px solid rgba(111,140,255,.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.6;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .notice-icon { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+  .notice a { color: var(--accent); text-decoration: underline; }
+
+  .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+  /* article picker */
+  .article-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
+    color: var(--text); font-family: var(--font); font-size: 13px;
+    cursor: pointer; text-align: left; transition: border-color .15s, background .15s;
+  }
+  .article-btn:hover { background: rgba(255,255,255,.09); border-color: var(--accent); }
+  .article-btn.sel { border-color: var(--accent); background: rgba(111,140,255,.12); }
+  .art-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .art-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .art-tag { font-size: 11px; font-family: var(--mono); padding: 2px 7px; border-radius: 100px;
+    background: var(--surface); border: 1px solid var(--border); color: var(--mute); flex-shrink: 0; }
+  .art-tag.has { color: var(--green); border-color: rgba(63,196,99,.3); background: rgba(63,196,99,.08); }
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M10 3L5 8l5 5"/></svg>
+  返回内容平台
+</a>
+
+<div class="hd">
+  <div class="hd-eyebrow">Admin Tool · 管理工具</div>
+  <h1>公众号封面提取工具</h1>
+  <p>粘贴任意公众号文章链接，自动解析封面图（og:image），一键复制 URL 或生成 data.js 代码片段。</p>
+</div>
+
+<!-- Step 1: Extract -->
+<div class="card">
+  <div class="card-title">① 粘贴文章链接</div>
+  <div class="input-row">
+    <input class="url-input" id="urlInput" type="url"
+      placeholder="https://mp.weixin.qq.com/s/xxxxxxx" autocomplete="off" spellcheck="false" />
+    <button class="btn" id="fetchBtn" onclick="fetchCover()">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M8 3v10M3 8h10"/></svg>
+      提取封面
+    </button>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+
+<!-- Manual fallback -->
+<div class="card" id="manualSection" style="display:none">
+  <div class="card-title">备用：手动粘贴封面图 URL</div>
+  <p style="font-size:13px;color:var(--dim);margin-bottom:14px;line-height:1.6">在浏览器打开文章页面 → 右键「查看页面源代码」→ 搜索 <code style="font-family:var(--mono);font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--accent)">og:image</code> → 复制 content 里的 URL，粘贴到下方：</p>
+  <div class="input-row">
+    <input class="url-input" id="manualImgUrl" type="url" placeholder="https://mmbiz.qpic.cn/..." autocomplete="off" spellcheck="false" />
+    <button class="btn" onclick="applyManualUrl()">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      使用此图
+    </button>
+  </div>
+</div>
+
+<!-- Step 2: Result -->
+<div class="card" id="result">
+  <div class="card-title">② 封面图预览</div>
+  <div class="result-grid">
+    <div class="cover-wrap">
+      <img id="previewImg" alt="" style="display:none" />
+      <div class="no-img" id="noImg">暂无图片</div>
+    </div>
+    <div class="result-info">
+      <div>
+        <div class="label">图片 URL</div>
+        <div class="url-box" id="imgUrlBox"></div>
+      </div>
+      <div class="action-row">
+        <button class="btn-sm primary" id="copyBtn" onclick="copyImgUrl()">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4"><rect x="3" y="3" width="9" height="9" rx="1.5"/><path d="M2 9V2h7"/></svg>
+          复制图片 URL
+        </button>
+        <button class="btn-sm" id="downloadBtn" onclick="downloadImg()">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><path d="M7 2v7M4 7l3 3 3-3"/><path d="M2 11h10"/></svg>
+          下载到本地
+        </button>
+        <span class="copied-badge" id="copiedBadge">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 6l3 3 5-5"/></svg>
+          已复制
+        </span>
+      </div>
+      <div class="notice">
+        <div class="notice-icon">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4"><circle cx="7" cy="7" r="6"/><path d="M7 4v3.5M7 10v.3"/></svg>
+        </div>
+        <div>微信 CDN（mmbiz.qpic.cn）<strong>有防盗链</strong>，直接用 URL 可能会失效。建议「下载到本地」保存到 <code>images/</code> 目录后再引用。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2b: Article picker -->
+<div class="card" id="pickerCard" style="display:none">
+  <div class="card-title">② 选择对应文章，一键保存封面</div>
+  <p style="font-size:13px;color:var(--dim);margin-bottom:14px;line-height:1.6">选中一篇文章，点「保存封面」。主平台刷新后即可看到，不需修改 data.js。</p>
+  <div style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;padding-right:4px" id="articleList"></div>
+  <div style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <button class="btn" id="saveBtn" onclick="saveCover()" disabled>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 7l3 3 7-7"/></svg>
+      保存封面
+    </button>
+    <span class="copied-badge" id="savedBadge">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 6l3 3 5-5"/></svg>
+      已保存！返回主平台刺新即可看到封面。
+    </span>
+  </div>
+</div>
+
+<!-- Step 3: Code snippet -->
+<div class="card" id="snippetCard" style="display:none">
+  <div class="card-title">③ 复制到 data.js</div>
+  <div style="margin-bottom:14px">
+    <div class="label" style="margin-bottom:8px">把下面的 cover 字段粘进你的文章对象</div>
+    <div class="snippet-box" id="snippetBox"></div>
+  </div>
+  <div class="action-row">
+    <button class="btn-sm primary" onclick="copySnippet()">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4"><rect x="3" y="3" width="9" height="9" rx="1.5"/><path d="M2 9V2h7"/></svg>
+      复制代码片段
+    </button>
+    <span class="copied-badge" id="snippetCopied">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 6l3 3 5-5"/></svg>
+      已复制
+    </span>
+  </div>
+</div>
+
+<!-- How it works -->
+<div class="card">
+  <div class="card-title">使用指南：添加封面图的完整流程</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">在上方粘贴公众号文章链接，点击「提取封面」，工具会通过 CORS 代理读取文章页面的 <code>og:image</code> 元标签。</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>推荐做法：</strong>点击「下载到本地」，把封面图保存到项目的 <code>images/</code> 文件夹，文件名建议与文章 id 一致，例如 <code>images/ai-scenarios.jpg</code>。这样不依赖微信 CDN，永久可用。
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">打开 <code>data.js</code>，在对应文章对象里加上 <code>cover: "images/ai-scenarios.jpg"</code> 字段（第③步会自动生成代码片段）。</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">保存，刷新 <a href="index.html" style="color:var(--accent)">内容平台</a>，封面图立即显示在卡片和阅读器里。若图片加载失败，组件会自动回退到占位符，不会白屏。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentImgUrl = "";
+  let currentArticleId = "";
+
+  // Press Enter to fetch
+  document.getElementById("urlInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") fetchCover();
+  });
+
+  async function fetchCover() {
+    const raw = document.getElementById("urlInput").value.trim();
+    if (!raw) return showStatus("请先粘贴文章链接", "err");
+
+    let urlObj;
+    try { urlObj = new URL(raw); }
+    catch { return showStatus("链接格式不正确，请检查后重试", "err"); }
+
+    // derive article id from URL path or query param
+    const parts = urlObj.pathname.split("/").filter(Boolean);
+    currentArticleId = parts[parts.length - 1] || urlObj.searchParams.get("s") || "article";
+
+    setLoading(true);
+    showStatus("正在提取封面图，请稍候（约 5–10 秒）…", "");
+    hideResult();
+
+    let imgUrl = null;
+    let lastErr = "";
+
+    // ── Strategy 1: Microlink API (renders page in real browser) ──
+    try {
+      const res = await fetch(
+        `https://api.microlink.io/?url=${encodeURIComponent(raw)}&meta=true`,
+        { signal: AbortSignal.timeout(20000) }
+      );
+      if (res.ok) {
+        const json = await res.json();
+        if (json.status === "success") {
+          imgUrl = json.data?.image?.url
+            || json.data?.screenshot?.url
+            || null;
+        }
+      }
+    } catch(e) { lastErr = e.message; }
+
+    // ── Strategy 2: jsonlink.io ──
+    if (!imgUrl) {
+      try {
+        const res = await fetch(
+          `https://jsonlink.io/api/extract?url=${encodeURIComponent(raw)}`,
+          { signal: AbortSignal.timeout(15000) }
+        );
+        if (res.ok) {
+          const json = await res.json();
+          imgUrl = json.images?.[0] || json.image || null;
+        }
+      } catch(e) { lastErr = e.message; }
+    }
+
+    // ── Strategy 3: allorigins HTML parse (fallback) ──
+    if (!imgUrl) {
+      try {
+        const res = await fetch(
+          `https://api.allorigins.win/get?url=${encodeURIComponent(raw)}`,
+          { signal: AbortSignal.timeout(15000) }
+        );
+        if (res.ok) {
+          const json = await res.json();
+          const html = json.contents || "";
+          const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+            || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+          if (ogMatch) imgUrl = ogMatch[1].replace(/&amp;/g, "&");
+        }
+      } catch(e) { lastErr = e.message; }
+    }
+
+    setLoading(false);
+
+    if (!imgUrl) {
+      showStatus(`未能提取到封面图。微信对自动抓取有限制，如多次失败，可在文章页面右键→查看源代码，搜索 og:image 手动复制图片 URL，再用下方「手动输入」粘贴。${lastErr ? "（" + lastErr + "）" : ""}`, "err");
+      document.getElementById("manualSection").style.display = "block";
+      return;
+    }
+
+    currentImgUrl = imgUrl;
+    showResult(currentImgUrl);
+    showStatus("封面提取成功 ✓", "ok");
+  }
+
+  let selectedArticleId = null;
+
+  function showResult(imgUrl) {
+    const result = document.getElementById("result");
+    const preview = document.getElementById("previewImg");
+    const noImg = document.getElementById("noImg");
+    const urlBox = document.getElementById("imgUrlBox");
+
+    result.style.display = "block";
+    urlBox.textContent = imgUrl;
+    urlBox.classList.remove("empty");
+
+    preview.style.display = "none";
+    noImg.style.display = "flex";
+    preview.onload = () => { preview.style.display = "block"; noImg.style.display = "none"; };
+    preview.onerror = () => { preview.style.display = "none"; noImg.textContent = "图片加载失败（防盗链）— 请直接下载"; };
+    preview.src = imgUrl;
+
+    // Show article picker
+    buildArticlePicker();
+    document.getElementById("pickerCard").style.display = "block";
+
+    // Build snippet
+    const localPath = `images/${currentArticleId}.jpg`;
+    const snippetCard = document.getElementById("snippetCard");
+    const snippetBox = document.getElementById("snippetBox");
+    snippetCard.style.display = "block";
+    snippetBox.innerHTML =
+      `<span class="c">// 方案 A：下载到本地后（推荐）</span>\n` +
+      `<span class="k">cover</span><span class="v">:</span> <span class="s">"${localPath}"</span>,\n\n` +
+      `<span class="c">// 方案 B：直接用 URL（可能因防盗链失效）</span>\n` +
+      `<span class="k">cover</span><span class="v">:</span> <span class="s">"${imgUrl.substring(0, 80)}${imgUrl.length > 80 ? '…' : ''}"</span>,`;
+  }
+
+  function hideResult() {
+    document.getElementById("result").style.display = "none";
+    document.getElementById("pickerCard").style.display = "none";
+    document.getElementById("snippetCard").style.display = "none";
+    document.getElementById("savedBadge").classList.remove("show");
+    currentImgUrl = ""; selectedArticleId = null;
+  }
+
+  function buildArticlePicker() {
+    selectedArticleId = null;
+    document.getElementById("saveBtn").disabled = true;
+    document.getElementById("savedBadge").classList.remove("show");
+    const list = document.getElementById("articleList");
+    list.innerHTML = "";
+    const articles = window.SITE_DATA || [];
+    if (!articles.length) {
+      list.innerHTML = `<div style="font-size:13px;color:var(--mute)">SITE_DATA 未加载，请检查 data.js 是否在同一目录</div>`;
+      return;
+    }
+    const savedCovers = JSON.parse(localStorage.getItem("rln_covers") || "{}");
+    articles.forEach(item => {
+      const hasCover = !!(item.cover || savedCovers[item.id]);
+      const btn = document.createElement("button");
+      btn.className = "article-btn";
+      btn.innerHTML =
+        `<span class="art-dot" style="background:${(window.PLATFORMS[item.platform] || {}).color || '#888'}"></span>` +
+        `<span class="art-title">${item.zh.title}</span>` +
+        (hasCover ? `<span class="art-tag has">有封面</span>` : `<span class="art-tag">无封面</span>`);
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".article-btn").forEach(b => b.classList.remove("sel"));
+        btn.classList.add("sel");
+        selectedArticleId = item.id;
+        document.getElementById("saveBtn").disabled = false;
+      });
+      list.appendChild(btn);
+    });
+  }
+
+  function saveCover() {
+    if (!selectedArticleId || !currentImgUrl) return;
+    const covers = JSON.parse(localStorage.getItem("rln_covers") || "{}");
+    covers[selectedArticleId] = currentImgUrl;
+    localStorage.setItem("rln_covers", JSON.stringify(covers));
+    document.getElementById("savedBadge").classList.add("show");
+    buildArticlePicker(); // refresh tags
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById("status");
+    el.className = "status" + (type ? " " + type : "");
+    if (type === "") {
+      el.innerHTML = `<div class="spinner"></div>${msg}`;
+    } else {
+      el.textContent = msg;
+    }
+  }
+
+  function applyManualUrl() {
+    const val = document.getElementById("manualImgUrl").value.trim();
+    if (!val) return;
+    currentImgUrl = val;
+    // use last part of URL path as article id if not already set
+    if (!currentArticleId || currentArticleId === "article") {
+      const u = document.getElementById("urlInput").value.trim();
+      if (u) {
+        try { const p = new URL(u).pathname.split("/").filter(Boolean); currentArticleId = p[p.length-1] || "article"; } catch{}
+      }
+    }
+    showResult(val);
+    showStatus("已应用手动输入的封面 URL ✓", "ok");
+    document.getElementById("manualSection").style.display = "none";
+  }
+
+  function setLoading(on) {
+    document.getElementById("fetchBtn").disabled = on;
+  }
+
+  function copyImgUrl() {
+    if (!currentImgUrl) return;
+    navigator.clipboard.writeText(currentImgUrl).then(() => {
+      const badge = document.getElementById("copiedBadge");
+      badge.classList.add("show");
+      setTimeout(() => badge.classList.remove("show"), 2000);
+    });
+  }
+
+  function downloadImg() {
+    if (!currentImgUrl) return;
+    // Try proxy download to bypass CORS
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(currentImgUrl)}`;
+    const a = document.createElement("a");
+    a.href = proxyUrl;
+    a.download = `${currentArticleId}.jpg`;
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function copySnippet() {
+    const text = document.getElementById("snippetBox").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const badge = document.getElementById("snippetCopied");
+      badge.classList.add("show");
+      setTimeout(() => badge.classList.remove("show"), 2000);
+    });
+  }
+</script>
+</body>
+</html>

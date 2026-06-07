@@ -101,8 +101,9 @@ window.TOPICS = [
 //  微信公众号没有自动同步：把每篇文章登记一条，url 填公众号原文链接，
 //  读者点开卡片看双语摘要，再点「在原平台查看」跳转到原文。
 //
-//  封面图：微信图片有防盗链，请把封面下载到 images/ 文件夹再引用。
-//  没有封面就删掉 cover 这一行，会自动显示占位图。
+//  封面图：用「封面提取工具.html」粘贴文章链接即可自动解析 og:image。
+//  微信 CDN（mmbiz.qpic.cn）有防盗链，建议下载后放到 images/ 目录引用。
+//  没有封面就删掉 cover 这一行，会自动显示占位图（不会白屏）。
 //
 //  把这段模板复制进数组（注意结尾的逗号）：
 /*
@@ -114,7 +115,7 @@ window.TOPICS = [
     date: "2026-06-01",                     // 发布日期 年-月-日
     read: 8,                                // 文章用：阅读分钟数  (视频改用 length:"6:24"，图集改用 count:18)
     url: "https://mp.weixin.qq.com/s/你的文章链接",   // ← 公众号原文链接
-    cover: "images/my-first-article.jpg",   // ← 封面图（没有就删掉这一行）
+    cover: "images/my-first-article.jpg",   // ← 封面图路径 / URL（没有就删掉这一行）
     zh: {
       title: "中文标题",
       excerpt: "卡片上显示的一句话摘要。",
