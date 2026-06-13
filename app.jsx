@@ -71,9 +71,10 @@ function App() {
   const t = window.UI[lang];
   // Merge localStorage cover overrides (set by 封面提取工具)
   const savedCovers = (() => { try { return JSON.parse(localStorage.getItem("rln_covers") || "{}"); } catch { return {}; } })();
-  const data = window.SITE_DATA.map(item =>
-    savedCovers[item.id] ? { ...item, cover: savedCovers[item.id] } : item
-  );
+  const data = window.SITE_DATA.map(item => {
+    const savedCover = savedCovers[item.id];
+    return !item.cover && savedCover ? { ...item, cover: savedCover } : item;
+  });
   const featured = data.filter(d => d.featured);
   const filtered = data.filter(d => filter === "all" || d.type === filter);
 

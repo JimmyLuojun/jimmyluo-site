@@ -50,7 +50,12 @@ function Cover({ item, lang }) {
   const [fetching, setFetching] = useState(false);
 
   // When parent re-renders with a newly resolved cover, pick it up
-  useEffect(() => { if (item.cover && !isBlockedCoverUrl(item.cover)) setSrc(item.cover); }, [item.cover]);
+  useEffect(() => {
+    if (item.cover && !isBlockedCoverUrl(item.cover)) {
+      setSrc(item.cover);
+      setImgErr(false);
+    }
+  }, [item.cover]);
 
   useEffect(() => {
     if (src || !item.url || item.url.includes("mp.weixin.qq.com/s/") || _coverFetching.has(item.id)) return;
@@ -68,6 +73,7 @@ function Cover({ item, lang }) {
             localStorage.setItem("rln_covers", JSON.stringify(saved));
           } catch {}
           setSrc(url);
+          setImgErr(false);
           // Tell App to re-render so Reader also gets the cover
           window.dispatchEvent(new Event("rln_cover_fetched"));
         }
