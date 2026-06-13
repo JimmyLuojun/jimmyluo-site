@@ -106,7 +106,7 @@ window.PROOF = {
       },
       {
         title: "得到 AI 落地大会现场",
-        text: "参与得到 AI 落地大会相关分享，保留公开活动现场记录，不展示公司客户或敏感业务数据。",
+        text: "在得到 AI 落地大会现场，围绕 AI 工具应用与工作提效做交流，记录一次把个人实践带到公开场合分享的经历。",
         image: "assets/media/dedao-ai-summit-photo.jpg",
       },
       {
@@ -130,7 +130,7 @@ window.PROOF = {
       },
       {
         title: "Dedao AI Practice Summit",
-        text: "Public event record from a Dedao AI practice summit, without showing client or sensitive business data.",
+        text: "A public event moment from Dedao's AI practice summit, centered on AI tools, workflow automation, and sharing hands-on experience.",
         image: "assets/media/dedao-ai-summit-photo.jpg",
       },
       {
