@@ -2,6 +2,15 @@
 
 > Personal website / portfolio
 
+## Prerequisites
+
+- Python 3（用于本地预览：`python3 -m http.server 8080`）
+- Node.js（用于 `add-cover.mjs` 脚本）
+
+## Test
+
+本项目无自动化测试，用 `python3 -m http.server 8080` 在浏览器目测验证，确认 `http://localhost:8080` 效果正常即可。
+
 ## Guidelines
 
 ### 强制规则
