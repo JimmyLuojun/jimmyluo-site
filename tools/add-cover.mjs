@@ -17,7 +17,7 @@ import path from "path";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
-const __dir = path.dirname(fileURLToPath(import.meta.url));
+const __dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 // ── CLI args ──────────────────────────────────────────────────
 const [firstArg, articleId] = process.argv.slice(2);

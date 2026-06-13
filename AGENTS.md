@@ -25,13 +25,13 @@
 
 **标准流程（封面可自动提取时）：**
 ```bash
-node add-cover.mjs "https://mp.weixin.qq.com/s/xxx" <文章id>
+node tools/add-cover.mjs "https://mp.weixin.qq.com/s/xxx" <文章id>
 ```
 脚本自动完成：提取封面 → 下载到 `images/<id>.jpg` → 更新 data.js → git commit & push。
 
 **微信文章封面被屏蔽时（手动指定图片）：**
 ```bash
-node add-cover.mjs "https://mmbiz.qpic.cn/..." <文章id>
+node tools/add-cover.mjs "https://mmbiz.qpic.cn/..." <文章id>
 ```
 在浏览器打开文章 → 右键封面图 → 「复制图片地址」→ 作为第一个参数传入。
 

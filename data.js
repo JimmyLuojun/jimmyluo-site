@@ -90,8 +90,8 @@ window.TOPICS = [
 ];
 
 window.PROOF = {
-  videoSrc: "media/luojun-ai-workflow-62s-fuller-no-price.mp4",
-  videoPoster: "media/luojun-ai-workflow-62s-fuller-no-price-poster.jpg",
+  videoSrc: "assets/media/luojun-ai-workflow-62s-fuller-no-price.mp4",
+  videoPoster: "assets/media/luojun-ai-workflow-62s-fuller-no-price-poster.jpg",
   zh: {
     eyebrow: "AI 分享与应用记录",
     title: "用 AI 编程实现自动化工作流",
@@ -102,17 +102,17 @@ window.PROOF = {
       {
         title: "学校老师 AI 提效分享",
         text: "受邀面向学校老师做 AI 提效分享，主题围绕 AI 时代的教育、教师工作提效与工具实践。",
-        image: "media/school-ai-teacher-sharing-stage.jpg",
+        image: "assets/media/school-ai-teacher-sharing-stage.jpg",
       },
       {
         title: "得到 AI 落地大会现场",
         text: "参与得到 AI 落地大会相关分享，保留公开活动现场记录，不展示公司客户或敏感业务数据。",
-        image: "media/dedao-ai-summit-photo.jpg",
+        image: "assets/media/dedao-ai-summit-photo.jpg",
       },
       {
         title: "AI 实战落地案例集",
         text: "AI 实践案例入选相关案例集，作为公开活动材料展示。",
-        image: "media/ai-practical-case-collection.jpg",
+        image: "assets/media/ai-practical-case-collection.jpg",
       },
     ],
   },
@@ -126,17 +126,17 @@ window.PROOF = {
       {
         title: "AI Efficiency Sharing for Teachers",
         text: "Invited to share AI productivity practices with school teachers, focusing on education in the AI era and practical tooling.",
-        image: "media/school-ai-teacher-sharing-stage.jpg",
+        image: "assets/media/school-ai-teacher-sharing-stage.jpg",
       },
       {
         title: "Dedao AI Practice Summit",
         text: "Public event record from a Dedao AI practice summit, without showing client or sensitive business data.",
-        image: "media/dedao-ai-summit-photo.jpg",
+        image: "assets/media/dedao-ai-summit-photo.jpg",
       },
       {
         title: "AI Practice Case Collection",
         text: "A public-facing case-collection material showing recognized AI practice work.",
-        image: "media/ai-practical-case-collection.jpg",
+        image: "assets/media/ai-practical-case-collection.jpg",
       },
     ],
   },
