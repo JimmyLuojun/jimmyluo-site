@@ -131,7 +131,15 @@ function App() {
   const t = window.UI[lang];
   // Merge localStorage cover overrides (set by 封面提取工具)
   const savedCovers = (() => { try { return JSON.parse(localStorage.getItem("rln_covers") || "{}"); } catch { return {}; } })();
-  const publishedItems = window.SITE_DATA.filter(item => item.url && item.url.includes("mp.weixin.qq.com/s/"));
+  const articleOrder = (item) => Number.isFinite(item.articleOrder) ? item.articleOrder : Number.MAX_SAFE_INTEGER;
+  const publishedItems = window.SITE_DATA
+    .filter(item => item.url && item.url.includes("mp.weixin.qq.com/s/"))
+    .slice()
+    .sort((a, b) => {
+      const orderDiff = articleOrder(a) - articleOrder(b);
+      if (orderDiff !== 0) return orderDiff;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
   const data = publishedItems.map(item => {
     const savedCover = savedCovers[item.id];
     return !item.cover && savedCover ? { ...item, cover: savedCover } : item;
