@@ -272,7 +272,7 @@ function About({ lang }) {
 function Footer({ lang }) {
   const t = window.UI[lang];
   const socials = [
-    { k: "wechat", c: "#3fc463" }, { k: "weibo", c: "#ff8a3d" }, { k: "channel", c: "#ff5a7a" },
+    { k: "wechat", c: "#3fc463" },
   ];
   return (
     <footer className="footer">
@@ -282,7 +282,7 @@ function Footer({ lang }) {
             <span className="brand-mark">罗</span>
             <div>
               <div className="brand-name">{lang === "zh" ? "罗军" : "Luo Jun"} <span style={{ color: "var(--text-mute)", fontWeight: 400 }}>· JimmyLuo</span></div>
-              <div className="brand-sub">Content Platform</div>
+              <div className="brand-sub">AI Tools & Content</div>
             </div>
           </div>
           <p className="footer-tag">{t.footTag}</p>

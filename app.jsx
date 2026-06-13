@@ -31,6 +31,43 @@ function ThemeSeg({ theme, setTheme }) {
   );
 }
 
+function ProofSection({ lang }) {
+  const source = window.PROOF;
+  if (!source || !source[lang]) return null;
+  const proof = source[lang];
+  return (
+    <section className="wrap proof-section" id="sharing">
+      <div className="proof-layout reveal">
+        <div className="proof-copy">
+          <div className="section-kicker">{proof.eyebrow}</div>
+          <h2>{proof.title}</h2>
+          <p>{proof.intro}</p>
+          <div className="proof-notes">
+            {proof.notes.map(note => <span key={note}>{note}</span>)}
+          </div>
+        </div>
+        <div className="proof-video-panel">
+          <video className="proof-video" controls playsInline preload="metadata" poster={source.videoPoster}>
+            <source src={source.videoSrc} type="video/mp4" />
+          </video>
+          <div className="proof-video-caption">{proof.videoLabel}</div>
+        </div>
+      </div>
+      <div className="proof-cards">
+        {proof.cards.map((card, i) => (
+          <article className="proof-card reveal" key={card.title} style={{ transitionDelay: (i * 70) + "ms" }}>
+            <img src={card.image} alt="" loading="lazy" />
+            <div>
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [theme, setTheme] = useState(() => LS.get("theme", "editorial"));
   const [lang, setLang] = useState(() => LS.get("lang", "zh"));
@@ -71,12 +108,11 @@ function App() {
   const t = window.UI[lang];
   // Merge localStorage cover overrides (set by 封面提取工具)
   const savedCovers = (() => { try { return JSON.parse(localStorage.getItem("rln_covers") || "{}"); } catch { return {}; } })();
-  const data = window.SITE_DATA.map(item => {
+  const publishedItems = window.SITE_DATA.filter(item => item.url && item.url.includes("mp.weixin.qq.com/s/"));
+  const data = publishedItems.map(item => {
     const savedCover = savedCovers[item.id];
     return !item.cover && savedCover ? { ...item, cover: savedCover } : item;
   });
-  const featured = data.filter(d => d.featured);
-  const filtered = data.filter(d => filter === "all" || d.type === filter);
 
   const scrollTo = (id) => {
     const el = document.getElementById(id);
@@ -97,6 +133,7 @@ function App() {
           </a>
           <div className="nav-spacer"></div>
           <nav className="nav-links">
+            <a className="nav-link" href="#sharing" onClick={(e) => { e.preventDefault(); scrollTo("sharing"); }}>{t.navProof || (lang === "zh" ? "AI 分享" : "AI Sharing")}</a>
             <a className="nav-link" href="#work" onClick={(e) => { e.preventDefault(); scrollTo("work"); }}>{t.navWork}</a>
             <a className="nav-link" href="#about" onClick={(e) => { e.preventDefault(); scrollTo("about"); }}>{t.navAbout}</a>
           </nav>
@@ -114,13 +151,15 @@ function App() {
           <h1>{t.heroLine1}<br /><span className="grad">{t.heroGrad}</span></h1>
           <p className="hero-lede">{t.heroLede}</p>
           <div className="hero-cta">
-            <button className="btn btn-primary" onClick={() => scrollTo("work")}>{t.ctaRead}
+            <button className="btn btn-primary" onClick={() => scrollTo("sharing")}>{t.ctaRead}
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
             </button>
-            <button className="btn btn-ghost" onClick={() => scrollTo("about")}>{t.ctaSubscribe}</button>
+            <button className="btn btn-ghost" onClick={() => scrollTo("work")}>{t.ctaSubscribe}</button>
           </div>
           {ticker && <Currently lang={lang} />}
         </section>
+
+        <ProofSection lang={lang} />
 
         <section className="wrap sec" id="work">
           <div className="sec-head">
@@ -128,53 +167,12 @@ function App() {
             <div className="sec-desc">{t.featDesc}</div>
           </div>
           <div className="grid feat">
-            {featured.map((item, i) => (
+            {data.map((item, i) => (
               <div className="reveal" key={item.id} style={{ transitionDelay: (i * 70) + "ms" }}>
                 <Card item={item} lang={lang} big={i === 0} onOpen={setOpen} />
               </div>
             ))}
           </div>
-        </section>
-
-        <section className="wrap sec">
-          <div className="sec-head">
-            <div className="sec-title"><span className="hash">#</span>{t.libTitle}</div>
-            <div className="view-toggle" role="group" aria-label="View">
-              <button className={view === "grid" ? "on" : ""} title={t.viewGrid} onClick={() => setView("grid")}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="0" width="6" height="6" rx="1"/><rect x="8" y="0" width="6" height="6" rx="1"/><rect x="0" y="8" width="6" height="6" rx="1"/><rect x="8" y="8" width="6" height="6" rx="1"/></svg>
-              </button>
-              <button className={view === "list" ? "on" : ""} title={t.viewList} onClick={() => setView("list")}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="2" rx="1"/><rect x="0" y="6" width="14" height="2" rx="1"/><rect x="0" y="11" width="14" height="2" rx="1"/></svg>
-              </button>
-            </div>
-          </div>
-          <div className="chips" style={{ marginBottom: 22 }}>
-            {window.TYPES.map(ty => {
-              const n = ty.id === "all" ? data.length : data.filter(d => d.type === ty.id).length;
-              return (
-                <button key={ty.id} className={"chip" + (filter === ty.id ? " on" : "")} onClick={() => setFilter(ty.id)}>
-                  {ty[lang]}<span className="ct">{String(n).padStart(2, "0")}</span>
-                </button>
-              );
-            })}
-          </div>
-          {filtered.length === 0 ? (
-            <div className="grid"><div className="empty">{t.emptyMsg}</div></div>
-          ) : view === "grid" ? (
-            <div className="grid">
-              {filtered.map((item, i) => (
-                <div className="reveal" key={item.id} style={{ transitionDelay: ((i % 3) * 60) + "ms" }}>
-                  <Card item={item} lang={lang} onOpen={setOpen} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="index-list reveal in">
-              {filtered.map((item, i) => (
-                <IndexRow key={item.id} item={item} lang={lang} n={i + 1} onOpen={setOpen} />
-              ))}
-            </div>
-          )}
         </section>
 
         <About lang={lang} />
