@@ -68,6 +68,29 @@ function ProofSection({ lang }) {
   );
 }
 
+function FitSection({ lang }) {
+  const t = window.UI[lang];
+  const roles = window.ROLE_FIT && window.ROLE_FIT[lang];
+  if (!roles || !roles.length) return null;
+  return (
+    <section className="wrap fit-section" id="fit">
+      <div className="sec-head reveal">
+        <div className="sec-title"><span className="hash">◆</span>{t.fitTitle}</div>
+        <div className="sec-desc">{t.fitDesc}</div>
+      </div>
+      <div className="fit-grid">
+        {roles.map((role, i) => (
+          <article className="fit-card reveal" key={role.title} style={{ transitionDelay: (i * 70) + "ms" }}>
+            <div className="fit-num">{String(i + 1).padStart(2, "0")}</div>
+            <h3>{role.title}</h3>
+            <p>{role.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [theme, setTheme] = useState(() => LS.get("theme", "editorial"));
   const [lang, setLang] = useState(() => LS.get("lang", "zh"));
@@ -159,6 +182,7 @@ function App() {
           {ticker && <Currently lang={lang} />}
         </section>
 
+        <FitSection lang={lang} />
         <ProofSection lang={lang} />
 
         <section className="wrap sec" id="work">

@@ -282,7 +282,7 @@ function Footer({ lang }) {
             <span className="brand-mark">罗</span>
             <div>
               <div className="brand-name">{lang === "zh" ? "罗军" : "Luo Jun"} <span style={{ color: "var(--text-mute)", fontWeight: 400 }}>· JimmyLuo</span></div>
-              <div className="brand-sub">AI Tools & Content</div>
+              <div className="brand-sub">B2B Sales & AI Tools</div>
             </div>
           </div>
           <p className="footer-tag">{t.footTag}</p>
